@@ -1,0 +1,88 @@
+### Collection de requêtes - client HTTP IntelliJ / VS Code (REST Client)
+### Données de démonstration (migrations V1_4 et V2_2) :
+###   adhérents : 1 = Moustapha (ETUDIANT), 2 = Mr LO (ENSEIGNANT), 3 = Diarra (ETUDIANT)
+###   exemplaires : 1 et 2 = Clean Code (ouvrage 1), 3 = Domain-Driven Design (ouvrage 2), 4 = Les Misérables (ouvrage 3)
+@host = http://localhost:8080
+
+### ---------- CATALOGUE ----------
+GET {{host}}/api/categories?page=0&size=5&sort=nom,asc
+
+###
+POST {{host}}/api/categories
+Content-Type: application/json
+
+{ "nom": "Économie", "description": "Macro et microéconomie" }
+
+###
+GET {{host}}/api/ouvrages/search?titre=clean&disponible=true
+
+###
+POST {{host}}/api/ouvrages
+Content-Type: application/json
+
+{ "titre": "Clean Architecture", "auteur": "Robert C. Martin", "isbn": "9780134494166", "anneePublication": 2017, "categorieId": 1 }
+
+###
+POST {{host}}/api/exemplaires
+Content-Type: application/json
+
+{ "ouvrageId": 1, "codeBarre": "EX-CC-003" }
+
+### ---------- ACTEURS ----------
+GET {{host}}/api/adherents
+
+###
+POST {{host}}/api/adherents
+Content-Type: application/json
+
+{ "nom": "Sow", "prenom": "Awa", "email": "awa.sow@univ.sn", "type": "ETUDIANT" }
+
+### ---------- SCÉNARIO MÉTIER : emprunt -> réservation -> retour ----------
+### 1. Alice emprunte l'exemplaire 3 (seul exemplaire de Domain-Driven Design)
+POST {{host}}/api/emprunts
+Content-Type: application/json
+
+{ "adherentId": 1, "exemplaireId": 3 }
+
+### 2. Bob tente d'emprunter le même exemplaire -> 409
+POST {{host}}/api/emprunts
+Content-Type: application/json
+
+{ "adherentId": 2, "exemplaireId": 3 }
+
+### 3. Chloé réserve l'ouvrage 2 (indisponible) -> 201, EN_ATTENTE
+POST {{host}}/api/reservations
+Content-Type: application/json
+
+{ "ouvrageId": 2, "adherentId": 3 }
+
+### 4. Alice retourne (remplacer 1 par l'id d'emprunt renvoyé à l'étape 1) -> la réservation de Chloé passe à PRETE
+POST {{host}}/api/emprunts/1/retour
+
+### 5. L'exemplaire 3 est RESERVE ; Bob ne peut pas l'emprunter (409), Chloé oui (201)
+GET {{host}}/api/exemplaires/3
+
+###
+POST {{host}}/api/emprunts
+Content-Type: application/json
+
+{ "adherentId": 3, "exemplaireId": 3 }
+
+### 6. Notifications générées par événements
+GET {{host}}/api/notifications?adherentId=1
+
+### ---------- ERREURS ----------
+### 400 : validation
+POST {{host}}/api/adherents
+Content-Type: application/json
+
+{ "nom": "", "prenom": "X", "email": "pas-un-email", "type": "ETUDIANT" }
+
+### 404
+GET {{host}}/api/ouvrages/999999
+
+### Santé et documentation
+GET {{host}}/actuator/health
+
+###
+GET {{host}}/v3/api-docs
