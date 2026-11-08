@@ -1,0 +1,7 @@
+# Profil de développement local : base PostgreSQL lancée via `docker compose up db`
+spring:
+  jpa:
+    show-sql: true
+logging:
+  level:
+    com.exam: DEBUG
