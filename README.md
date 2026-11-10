@@ -1,6 +1,6 @@
 # API Bibliothèque universitaire — Spring Boot, monolithe modulaire
 
-Projet d'examen M1 Génie Logiciel — **domaine A : Bibliothèque universitaire**.
+Projet d'examen M1 Génie Logiciel — ** : Bibliothèque universitaire**.
 Java 21 · Spring Boot 3.3 · Spring Modulith · PostgreSQL 16 · Flyway · MapStruct · springdoc-openapi · Docker.
 
 ## Lancement en une commande
@@ -8,6 +8,7 @@ Java 21 · Spring Boot 3.3 · Spring Modulith · PostgreSQL 16 · Flyway · MapS
 ```bash
 docker compose up --build
 ```
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
 
 L'application démarre après que PostgreSQL est « healthy », puis Flyway applique les migrations.
 Les valeurs par défaut conviennent pour une démonstration ; pour les personnaliser : `cp .env.example .env` puis éditer.
@@ -76,10 +77,19 @@ Application démarrée : `./scripts/export-openapi.sh` → génère `openapi.jso
 données de référence (`V1_2` catégories) et données de démonstration (`V1_4`, `V2_2`). Une migration appliquée n'est jamais modifiée.
 
 ## Outils d'assistance déclarés
+Ce projet a été réalisé avec l'aide de Claude (Anthropic) et ChatGPT pour la structure et de certaines parties du code. La documentation suivante a également été consultée :
 
-Ce projet a été réalisé avec l'aide de **Claude (Anthropic)** : génération initiale de la structure et du code,
-relus, compris et testés par l'auteur, qui peut expliquer et modifier chaque partie en soutenance.
+Documentation officielle de Spring Boot et Spring Modulith (spring.io)
 
+Documentation de springdoc-openapi (springdoc.org)
+
+Documentation de Flyway / Liquibase
+
+Documentation Docker (Dockerfile multi-étapes, Docker Compose)
+
+ArchUnit (archunit.org), pour qui préfère tester l'architecture sans Spring Modulith
+
+L'auteur a relu, corrigé, adapté et testé l'ensemble du code, réécrit la logique métier et l'interface.
 ## Bonus couverts
 
 Pipeline CI GitHub Actions (`.github/workflows/ci.yml`) · documentation Spring Modulith générée · Actuator avec healthcheck applicatif dans le compose.

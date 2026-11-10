@@ -1,0 +1,6 @@
+# Surcharge réservée au développement local : expose PostgreSQL sur la machine hôte.
+# Usage : docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db
+services:
+  db:
+    ports:
+      - "${DB_PORT:-5433}:5432"
